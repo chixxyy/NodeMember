@@ -10,8 +10,10 @@ const initialize = require('./passport-config')
 const passport = require('passport')
 const flash = require('express-flash')
 const session = require('express-session')
-initialize(passport, 
-    email => users.find(user => user.email === email)
+initialize(
+    passport, 
+    email => users.find(user => user.email === email),
+    id => users.find(user => user.id === id),
 )
 
 app.set('view-engine', 'ejs')
