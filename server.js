@@ -10,7 +10,9 @@ const initialize = require('./passport-config')
 const passport = require('passport')
 const flash = require('express-flash')
 const session = require('express-session')
-initialize(
+const methodOverride = require('method-override')
+
+initialize (
     passport, 
     email => users.find(user => user.email === email),
     id => users.find(user => user.id === id),
@@ -26,26 +28,27 @@ app.use(session({
 }))
 app.use(passport.initialize())
 app.use(passport.session())
+app.use(methodOverride('_method'))
 
-app.get('/',(req, res) => {
-    res.render('index.ejs', { name: 'hello' })
+app.get('/', checkAuthenticated, (req, res) => {
+    res.render('index.ejs', { name: req.user.name })
 })
 
-app.get('/login', (req, res) => {
+app.get('/login', checkNotAuthenticated, (req, res) => {
     res.render('login.ejs')
 })
 
-app.post('/login', passport.authenticate('local',{
+app.post('/login', checkNotAuthenticated, passport.authenticate('local',{
     successRedirect: '/',
     failureRedirect: '/login',
     failureFlash: true
 }))
 
-app.get('/register', (req, res) => {
+app.get('/register', checkNotAuthenticated, (req, res) => {
     res.render('register.ejs')
 })
 
-app.post('/register', async (req, res) => {
+app.post('/register', checkNotAuthenticated, async (req, res) => {
     try{
         const hashedPassword = await bcrypt.hash(req.body.password, 10)
         users.push({
@@ -58,7 +61,27 @@ app.post('/register', async (req, res) => {
     }catch{
         res.redirect('/register')
     }
-    console.log(users);
+    console.log(users); // 檢視是否登入成功
 })
+
+app.delete('/logout', (req, res) => {
+    req.logout((err) => {
+        if (err) { return next(err); }
+        res.redirect('/login')
+    })
+})
+
+function checkAuthenticated (req, res, next) {
+    if (req.isAuthenticated()) {
+        return next()
+    }
+    res.redirect('/login')
+}
+function checkNotAuthenticated (req, res, next) {
+    if (req.isAuthenticated()) {
+        return res.redirect('/')
+    }
+    next()
+}
 
 app.listen(3000)
