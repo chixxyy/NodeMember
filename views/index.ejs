@@ -1,4 +1,12 @@
-<h1>hi <%= name %></h1>
-<form action="/logout?_method=DELETE" method="POST">
-    <button type="submit">Log Out</button>
-</form>
+<link href="/css/output.css" rel="stylesheet">
+<div class="flex items-center justify-center min-h-screen bg-gray-100">
+    <div class="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md text-center">
+        <h1 class="text-2xl font-bold text-gray-800">Welcome <%= name %></h1>
+
+        <form action="/logout?_method=DELETE" method="POST">
+            <button type="submit" class="w-full py-2 mt-4 text-white bg-red-600 rounded hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:outline-none">
+                Log Out
+            </button>
+        </form>
+    </div>
+</div>
