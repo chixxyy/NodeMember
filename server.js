@@ -172,6 +172,6 @@ function checkNotAuthenticated(req, res, next) {
 }
 
 app.listen(3000, () => {
-    console.log('server run ad http://localhost:3000');
-    console.log('API docs available at http://localhost:3000/api-docs');
+    console.log('Server端 http://localhost:3000');
+    console.log('API端 http://localhost:3000/api-docs');
 })
